@@ -40,12 +40,53 @@ export default function HistoryScreen() {
         renderItem={({ item }) => (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>{item.title}</Text>
-            <Text style={styles.cardSub}>
-              {item.type} • {item.status}
-            </Text>
-            <Text style={styles.cardSub}>
-              {item.date} • {item.time} • Assigned to: {item.assignedTo}
-            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                gap: 4,
+                marginTop: 4,
+                alignItems: "center",
+                justifyContent: "flex-start",
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "#90D5FF",
+                  padding: 4,
+                  borderRadius: 4,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Text style={styles.cardSub}> {item.type}</Text>
+              </View>{" "}
+              •{" "}
+              <View
+                style={{
+                  backgroundColor: "#77B1D4",
+                  padding: 4,
+                  borderRadius: 4,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Text style={styles.cardSub}> {item.status}</Text>
+              </View>{" "}
+            </View>
+            <View
+              style={{
+                marginVertical: 8,
+                backgroundColor: "#fce4ec",
+                borderRadius: 8,
+                padding: 12,
+                marginBottom: 20,
+              }}
+            >
+              <Text style={styles.cardSub2}>
+                {item.date} • {item.time} • Assigned to: {item.assignedTo}
+              </Text>
+            </View>
           </View>
         )}
         ListEmptyComponent={
@@ -98,9 +139,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+
   cardSub: {
-    fontSize: 12,
-    color: "#666",
-    marginTop: 2,
+    fontSize: 13,
+    color: "#fff",
+    fontWeight: "600",
+  },
+  cardSub2: {
+    fontSize: 14,
+    color: "#c2185b",
+    fontWeight: "500",
   },
 });

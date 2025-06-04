@@ -17,25 +17,20 @@ export default function HomeScreen() {
   const inProgressRequests =
     workOrders.filter((workOrder) => workOrder.status === "In Progress")
       .length || 0;
+
   const currentUser = users.find((u) => u.id === "user1");
   const userBuilding = buildings.find((b) => b.id === currentUser?.buildingId);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={styles.homeContainer}>
         <Header />
         <Search />
         <ServicesTabs />
+
+        {/* Overview Section */}
         <View style={styles.overviewContainer}>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "bold",
-              marginBottom: 10,
-              textAlign: "left",
-            }}
-          >
-            Faculty Overview
-          </Text>
+          <Text style={styles.sectionTitle}>Facility Overview</Text>
           <View style={styles.overviewCardsContainer}>
             <View style={styles.overviewCard}>
               <Text style={styles.overviewCardText}>Total Requests</Text>
@@ -45,21 +40,8 @@ export default function HomeScreen() {
               <Text style={styles.overviewCardText}>Pending Requests</Text>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text style={styles.overviewCardValue}>{pendingRequests}</Text>
-                <View
-                  style={{
-                    width: 20,
-                    height: 20,
-                    borderRadius: 5,
-                    backgroundColor: "#F44336",
-                    marginLeft: "auto",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexDirection: "column",
-                  }}
-                >
-                  <Text
-                    style={{ color: "#fff", fontSize: 12, fontWeight: "bold" }}
-                  >
+                <View style={styles.inProgressBadge}>
+                  <Text style={styles.inProgressText}>
                     {inProgressRequests}
                   </Text>
                 </View>
@@ -68,6 +50,7 @@ export default function HomeScreen() {
           </View>
         </View>
 
+        {/* Building Info */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Building Information</Text>
           <View style={styles.card}>
@@ -77,17 +60,24 @@ export default function HomeScreen() {
             </Text>
             <View style={styles.infoRow}>
               <Text style={styles.label}>Open Work Orders:</Text>
-              <Text style={styles.value}>{userBuilding?.openWorkOrders}</Text>
+              <View style={[styles.tag, { backgroundColor: "#FFECB3" }]}>
+                <Text style={styles.tagText}>
+                  {userBuilding?.openWorkOrders}
+                </Text>
+              </View>
             </View>
             <View style={styles.infoRow}>
               <Text style={styles.label}>Completed Work Orders:</Text>
-              <Text style={styles.value}>
-                {userBuilding?.completedWorkOrders}
-              </Text>
+              <View style={[styles.tag, { backgroundColor: "#C8E6C9" }]}>
+                <Text style={[styles.tagText, { color: "#2E7D32" }]}>
+                  {userBuilding?.completedWorkOrders}
+                </Text>
+              </View>
             </View>
           </View>
         </View>
 
+        {/* Recent Activity */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Recent Activity</Text>
           {workOrders
@@ -96,14 +86,40 @@ export default function HomeScreen() {
             .map((order) => (
               <View key={order.id} style={styles.recentCard}>
                 <Text style={styles.recentTitle}>{order.title}</Text>
-                <Text style={styles.recentSubtitle}>
-                  {order.type} • {order.status} • {order.date}
-                </Text>
+                <View style={styles.tagRow}>
+                  <View style={[styles.tag, { backgroundColor: "#90CAF9" }]}>
+                    <Text style={styles.tagText}>{order.type}</Text>
+                  </View>
+                  <Text style={{ color: "#555" }}> • </Text>
+                  <View
+                    style={[
+                      styles.tag,
+                      {
+                        backgroundColor:
+                          order.status === "Pending"
+                            ? "#FFE082"
+                            : order.status === "In Progress"
+                            ? "#81D4FA"
+                            : order.status === "Completed"
+                            ? "#C8E6C9"
+                            : "#FFCDD2",
+                      },
+                    ]}
+                  >
+                    <Text style={[styles.tagText, { color: "#333" }]}>
+                      {order.status}
+                    </Text>
+                  </View>
+                </View>
+                <Text style={styles.recentSubtitle}>{order.date}</Text>
               </View>
             ))}
         </View>
 
-        <View style={(styles.section, { marginBottom: 40 })}>
+        {/* Support Section */}
+        <View
+          style={{ marginBottom: 40, paddingHorizontal: 10, paddingTop: 10 }}
+        >
           <Text style={styles.sectionTitle}>Need Help?</Text>
           <View style={styles.supportCard}>
             <Text style={styles.supportText}>
@@ -144,12 +160,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-
     marginBottom: 10,
-    color: "#fff",
-    textAlign: "center",
-    fontSize: 16,
-    fontWeight: "bold",
   },
   overviewCardText: {
     textAlign: "left",
@@ -161,17 +172,29 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginTop: 5,
   },
+  inProgressBadge: {
+    width: 20,
+    height: 20,
+    borderRadius: 5,
+    backgroundColor: "#F44336",
+    marginLeft: "auto",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  inProgressText: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
   section: {
     paddingHorizontal: 10,
     paddingTop: 10,
   },
-
   sectionTitle: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 8,
   },
-
   card: {
     backgroundColor: "#fff",
     borderRadius: 8,
@@ -182,35 +205,46 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-
   buildingName: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 4,
   },
-
   buildingLocation: {
     fontSize: 14,
     color: "#555",
     marginBottom: 10,
   },
-
   infoRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 4,
   },
-
   label: {
     fontSize: 14,
     color: "#333",
   },
-
   value: {
     fontWeight: "600",
     fontSize: 14,
   },
-
+  tagRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+    marginTop: 6,
+    alignItems: "center",
+  },
+  tag: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+  },
+  tagText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#fff",
+  },
   recentCard: {
     backgroundColor: "#fff",
     borderRadius: 8,
@@ -222,25 +256,21 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 1,
   },
-
   recentTitle: {
     fontSize: 16,
     fontWeight: "600",
   },
-
   recentSubtitle: {
     fontSize: 12,
     color: "#666",
     marginTop: 4,
   },
-
   supportCard: {
     backgroundColor: "#fce4ec",
     borderRadius: 8,
     padding: 12,
     marginBottom: 20,
   },
-
   supportText: {
     fontSize: 14,
     color: "#c2185b",

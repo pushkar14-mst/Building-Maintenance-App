@@ -19,6 +19,21 @@ export default function WorkOrdersScreen() {
       ? workOrders
       : workOrders.filter((w) => w.status === filter);
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Pending":
+        return "#FFE082"; // light yellow
+      case "In Progress":
+        return "#81D4FA"; // light blue
+      case "Completed":
+        return "#C8E6C9"; // light green
+      case "Rejected":
+        return "#FFCDD2"; // light red
+      default:
+        return "#E0E0E0"; // gray fallback
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Work Orders</Text>
@@ -45,14 +60,39 @@ export default function WorkOrdersScreen() {
         renderItem={({ item }) => (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>{item.title}</Text>
-            <Text style={styles.cardSub}>
-              {item.type} • {item.status}
-            </Text>
-            <Text style={styles.cardSub}>
-              {item.date} • {item.time} • Assigned to: {item.assignedTo}
-            </Text>
+
+            <View style={styles.tagRow}>
+              <View style={[styles.tag, { backgroundColor: "#90CAF9" }]}>
+                <Text style={styles.tagText}>{item.type}</Text>
+              </View>
+              <Text style={{ color: "#555" }}> • </Text>
+              <View
+                style={[
+                  styles.tag,
+                  { backgroundColor: getStatusColor(item.status) },
+                ]}
+              >
+                <Text style={[styles.tagText, { color: "#333" }]}>
+                  {item.status}
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.metaBox}>
+              <Text style={styles.metaText}>
+                {item.date} • {item.time}
+              </Text>
+              <Text style={styles.metaText}>
+                Assigned to: {item.assignedTo}
+              </Text>
+            </View>
           </View>
         )}
+        ListEmptyComponent={
+          <Text style={{ textAlign: "center", marginTop: 30, color: "#999" }}>
+            No {filter} requests found.
+          </Text>
+        }
       />
     </SafeAreaView>
   );
@@ -75,7 +115,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   filterButton: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: 6,
     backgroundColor: "#eee",
@@ -97,9 +137,32 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  cardSub: {
-    fontSize: 12,
-    color: "#666",
-    marginTop: 2,
+  tagRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 4,
+    marginTop: 6,
+    alignItems: "center",
+  },
+  tag: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+  },
+  tagText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#fff",
+  },
+  metaBox: {
+    marginVertical: 10,
+    backgroundColor: "#fce4ec",
+    borderRadius: 8,
+    padding: 10,
+  },
+  metaText: {
+    fontSize: 13,
+    color: "#c2185b",
+    fontWeight: "500",
   },
 });
