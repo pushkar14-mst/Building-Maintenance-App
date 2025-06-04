@@ -70,8 +70,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   filterContainer: {
+    maxWidth: "55%",
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     marginBottom: 12,
   },
   filterButton: {
