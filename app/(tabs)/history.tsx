@@ -14,6 +14,17 @@ export default function HistoryScreen() {
 
   const filteredOrders = workOrders.filter((wo) => wo.status === filter);
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Completed":
+        return "#C8E6C9";
+      case "Rejected":
+        return "#FFCDD2";
+      default:
+        return "#ccc";
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>History</Text>
@@ -34,56 +45,33 @@ export default function HistoryScreen() {
           </TouchableOpacity>
         ))}
       </View>
+
       <FlatList
         data={filteredOrders}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>{item.title}</Text>
-            <View
-              style={{
-                flexDirection: "row",
-                flexWrap: "wrap",
-                gap: 4,
-                marginTop: 4,
-                alignItems: "center",
-                justifyContent: "flex-start",
-              }}
-            >
+
+            <View style={styles.tagRow}>
+              <View style={[styles.tag, { backgroundColor: "#90CAF9" }]}>
+                <Text style={styles.tagText}>{item.type}</Text>
+              </View>
+              <Text style={{ color: "#555" }}> • </Text>
               <View
-                style={{
-                  backgroundColor: "#90D5FF",
-                  padding: 4,
-                  borderRadius: 4,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
+                style={[
+                  styles.tag,
+                  { backgroundColor: getStatusColor(item.status) },
+                ]}
               >
-                <Text style={styles.cardSub}> {item.type}</Text>
-              </View>{" "}
-              •{" "}
-              <View
-                style={{
-                  backgroundColor: "#77B1D4",
-                  padding: 4,
-                  borderRadius: 4,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Text style={styles.cardSub}> {item.status}</Text>
-              </View>{" "}
+                <Text style={[styles.tagText, { color: "#333" }]}>
+                  {item.status}
+                </Text>
+              </View>
             </View>
-            <View
-              style={{
-                marginVertical: 8,
-                backgroundColor: "#fce4ec",
-                borderRadius: 8,
-                padding: 12,
-                marginBottom: 20,
-              }}
-            >
-              <Text style={styles.cardSub2}>
+
+            <View style={styles.metaCard}>
+              <Text style={styles.cardMeta}>
                 {item.date} • {item.time} • Assigned to: {item.assignedTo}
               </Text>
             </View>
@@ -139,13 +127,31 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-
-  cardSub: {
-    fontSize: 13,
-    color: "#fff",
-    fontWeight: "600",
+  tagRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+    marginTop: 6,
+    alignItems: "center",
   },
-  cardSub2: {
+  tag: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+  },
+  tagText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#fff",
+  },
+  metaCard: {
+    marginVertical: 8,
+    backgroundColor: "#fce4ec",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 20,
+  },
+  cardMeta: {
     fontSize: 14,
     color: "#c2185b",
     fontWeight: "500",
